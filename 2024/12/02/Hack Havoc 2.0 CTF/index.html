@@ -1,0 +1,352 @@
+
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="utf-8" />
+    <title>Hack Havoc 2.0 CTF Write Up | Sh1ro&#39;s Blog</title>
+    <meta name="author" content="Sh1ro" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+    />
+    <link rel="icon" href="/images/avatar.jpg" />
+    <link rel="preconnect" href="https://s4.zstatic.net" />
+<script src="https://s4.zstatic.net/ajax/libs/vue/3.3.7/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://s4.zstatic.net/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.cn" />
+<link rel="preconnect" href="https://fonts.gstatic.cn" crossorigin />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.cn/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap"
+/>
+<script> const mixins = {}; </script>
+
+<script src="https://polyfill.alicdn.com/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://s4.zstatic.net/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>伺服器加載中 請稍後... </p>
+                    <img src="/images/loading.gif" />
+                </div>
+            </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>SH1RO&#39;S BLOG</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/about">
+            <i class="fa-solid fa-id-card fa-fw"></i>
+            <span>&ensp;About</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+        <a href="/categories">
+            <i class="fa-solid fa-bookmark fa-fw"></i>
+            <span>&ensp;Categories</span>
+        </a>
+        
+        <a href="/tags">
+            <i class="fa-solid fa-tags fa-fw"></i>
+            <span>&ensp;Tags</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;SH1RO&#39;S BLOG</span>
+        </div>
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/about">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-id-card fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">About</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+                <a href="/categories">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-bookmark fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Categories</div>
+                    </div>
+                </a>
+                
+                <a href="/tags">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-tags fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Tags</div>
+                    </div>
+                </a>
+                
+            </div>
+        </transition>
+    </nav>
+</div>
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
+
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+    <div>
+        <h1>Hack Havoc 2.0 CTF Write Up</h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2024/12/2
+        </span>
+        
+        
+        <span class="tags">
+            <span class="icon">
+                <i class="fa-solid fa-tags fa-fw"></i>
+            </span>
+            
+            
+            <span class="tag">
+                
+                <a href="/tags/CTF/" style="color: #00bcd4">
+                    CTF
+                </a>
+            </span>
+            
+        </span>
+        
+    </div>
+    
+    <div class="content" v-pre>
+        <h1 id="Hack-Havoc-2-0-Write-Up-–-Sh1ro"><a href="#Hack-Havoc-2-0-Write-Up-–-Sh1ro" class="headerlink" title="Hack Havoc 2.0 Write Up – Sh1ro"></a>Hack Havoc 2.0 Write Up – Sh1ro</h1><p>LeaderBoard &amp; points:<br><img src="https://hackmd.io/_uploads/S1GxV4Jzke.png" alt="image"><br><img src="https://hackmd.io/_uploads/SyIZNEyf1l.png" alt="image"><br>Solves:<br><img src="https://hackmd.io/_uploads/rJocfPjxke.png" alt="image"></p>
+<h2 id="Question"><a href="#Question" class="headerlink" title="Question"></a>Question</h2><h3 id="Bonus"><a href="#Bonus" class="headerlink" title="Bonus"></a>Bonus</h3><h4 id="Welcome-To-CyberMaterial-5"><a href="#Welcome-To-CyberMaterial-5" class="headerlink" title="Welcome To CyberMaterial - 5"></a>Welcome To CyberMaterial - 5</h4><p>Answer:CM{w3lc0m3_t0_H4ac_H4voc}<br><img src="https://hackmd.io/_uploads/B1YYfLsg1x.png" alt="image"></p>
+<pre><code>Welcome to Hack Havoc 2.0. The Premiere CTF Hosted by 
+Cybermaterial. Before we start the journey, let&#39;s make a 
+detour to our Discord Server and on instagram. Friends are
+crucial for every adventure ...
+
+Discord
+https://discord.gg/ATw3qYMX7e
+
+Instagram
+https://www.instagram.com/cybermaterial_/
+
+Linkedin
+https://www.linkedin.com/company/cybermaterial/
+
+Don&#39;t forget to give us a follow
+
+Flag Format: CM&#123;String&#125;
+</code></pre>
+<ol>
+<li><p>進入CyberMaterial的Discord後，在他們的聊天室輸入”&#x2F;flag”，<br>會有一個Discord Bot私訊，可以看到Flag的第一個部分。<br><img src="https://hackmd.io/_uploads/S10ubUje1l.png" alt="image"><br><img src="https://hackmd.io/_uploads/rkX6WLseyl.png" alt="image"></p>
+</li>
+<li><p>接著打開CyberMaterial的Instagram，在個人簡介可以看到Flag的第二部分，<br>將兩部分Flag組合起來即可得出本題的答案。<br><img src="https://hackmd.io/_uploads/SJEPfUjx1x.png" alt="螢幕擷取畫面 2024-10-27 133946"></p>
+</li>
+</ol>
+<h4 id="FeedBack-5"><a href="#FeedBack-5" class="headerlink" title="FeedBack - 5"></a>FeedBack - 5</h4><p><img src="https://hackmd.io/_uploads/SJwSQ8jgye.png" alt="image"></p>
+<pre><code>Flag you will be getting on mail
+
+https://forms.gle/MtgWRp67i7n2QZJ86
+</code></pre>
+<ol>
+<li>點進連結後可以看到一個Google表單，回覆完之後，主辦單位就會傳到你的Email，<br>Flag就在他附的GIF檔裡面~<br><img src="https://hackmd.io/_uploads/ByDgNIie1x.png" alt="image"></li>
+</ol>
+<h3 id="Mobile"><a href="#Mobile" class="headerlink" title="Mobile"></a>Mobile</h3><h4 id="APK-ocalypse-Now-20"><a href="#APK-ocalypse-Now-20" class="headerlink" title="APK-ocalypse Now! - 20"></a>APK-ocalypse Now! - 20</h4><p>Answer:CM{H1dd3n_7L4g_1n_M4nIF35T}<br><img src="https://hackmd.io/_uploads/rylTf8ixkg.png" alt="image"></p>
+<pre><code>Put on your detective hat and dive into our mysterious
+APK! Get it and uncover hidden treasures—will it be 
+memes, cat videos, or just code? Get ready to crack the
+APK-ocalypse! 🐱‍👤💥
+
+Download Link:
+https://ctf.cybermaterial.com/files/aeeca9f91264d4b2c75f9f6e3a135592/hackhavoc.apk?token=eyJ1c2VyX2lkIjo0MzgsInRlYW1faWQiOm51bGwsImZpbGVfaWQiOjh9.Zx3SsQ.FPACwCJKIdIAW5rCJkEpK_39Sxs
+</code></pre>
+<ol>
+<li><p>將下載的APK檔案丟進去虛擬機後(這邊使用Kali)，使用Engrampa打開後，<br>點擊app-release -&gt; AndroidManifest.xml，可以在中間看到加密過的Flag。<br><img src="https://hackmd.io/_uploads/ByN0SIolJl.png" alt="image"></p>
+</li>
+<li><p>把加密過的Flag丟至ROT解密，在ROT13可看到原本的訊息，也就是本題的答案。<br><img src="https://hackmd.io/_uploads/Hyv69Ujxyl.png" alt="image"></p>
+</li>
+</ol>
+<h3 id="Misc"><a href="#Misc" class="headerlink" title="Misc"></a>Misc</h3><h4 id="The-Case-of-the-Missing-Flag-40-First-Kill"><a href="#The-Case-of-the-Missing-Flag-40-First-Kill" class="headerlink" title="The Case of the Missing Flag - 40 [First Kill]"></a>The Case of the Missing Flag - 40 [First Kill]</h4><p>Answer:CM{F0r3n3ic_1s_34sy}<br><img src="https://hackmd.io/_uploads/rJZ_jUsekg.png" alt="image"></p>
+<pre><code>Congratulations, detective! You’ve found ABC.dat, the file
+that’s about as exciting as watching paint dry. But wait! 
+Rumor has it there’s a flag tucked away in there, possibly 
+hiding RQ.
+
+Can you solve the mystery before your snacks run out? Get 
+cracking, and may the bytes be ever in your favor!
+
+Download Link:
+https://ctf.cybermaterial.com/files/94f873833d7c61c78d37365b9b5dfa1e/abc.dat?token=eyJ1c2VyX2lkIjo0MzgsInRlYW1faWQiOm51bGwsImZpbGVfaWQiOjl9.Zx3bBg.q1sZZOr0xUX6W15EFmaOr7FaSCk
+</code></pre>
+<ol>
+<li><p>利用文本編輯器(Ex:notepad)打開後，可以知道原本的檔案是svg檔。<br><img src="https://hackmd.io/_uploads/BJ2xnIoxyx.png" alt="image"></p>
+</li>
+<li><p>還原svg檔後，丟去網路上的svg viewer，可以看到是一個QRcode。t<br><img src="https://hackmd.io/_uploads/S1fshLsgkx.png" alt="image"></p>
+</li>
+<li><p>掃描過後即可獲得本題的Flag。<br><img src="https://hackmd.io/_uploads/rk0-p8jeJl.png" alt="image"></p>
+</li>
+</ol>
+<h3 id="Crypto"><a href="#Crypto" class="headerlink" title="Crypto"></a>Crypto</h3><h4 id="The-Curious-Case-of-the-Jumbled-Symbols-40"><a href="#The-Curious-Case-of-the-Jumbled-Symbols-40" class="headerlink" title="The Curious Case of the Jumbled Symbols - 40"></a>The Curious Case of the Jumbled Symbols - 40</h4><p>Answer:CM{stauiliss_ruins_muharg}<br><img src="https://hackmd.io/_uploads/H1Jd6IoeJg.png" alt="image"></p>
+<pre><code>Dive into a tangled web of characters! Can you decode 
+&#123;╵⸍⸝╮ᛁ⸌ᛁ╵╵_◟╮ᛁ⸜╵_ᛙ╮ᚽ⸝◟ᛍ&#125; ? Here’s a clue: It’s not what 
+it seems—things aren’t always as clear as they appear. 
+Good luck, puzzle master!
+
+Wrap Flag in CM&#123;&#125;
+</code></pre>
+<ol>
+<li><p>根據題目給的資訊，我們需要解碼”{╵⸍⸝╮ᛁ⸌ᛁ╵╵_◟╮ᛁ⸜╵_ᛙ╮ᚽ⸝◟ᛍ}”這段訊息，<br>根據dcode網站上AI的猜測，推測是Futhark字母，也就是所謂的Rune符文。<br><img src="https://hackmd.io/_uploads/BkaIRLig1x.png" alt="image"></p>
+</li>
+<li><p>在網上找到對應的Rune Transfer，就可以得到本題的Flag。<br><img src="https://hackmd.io/_uploads/Sy3MyPogke.png" alt="image"></p>
+</li>
+</ol>
+<p>:::info<br>記得在前面加上CM的前綴。<br>:::</p>
+<h3 id="Boot-To-Root"><a href="#Boot-To-Root" class="headerlink" title="Boot To Root"></a>Boot To Root</h3><h4 id="Hacker’s-Fortress-50"><a href="#Hacker’s-Fortress-50" class="headerlink" title="Hacker’s Fortress - 50"></a>Hacker’s Fortress - 50</h4><p>Answer:CTF{3sc4l4t3d_t0_r00t}<br><img src="https://hackmd.io/_uploads/Bya8ywogJx.png" alt="image"></p>
+<pre><code>In this boot-to-root exercise, participants will need to leverage their skills in file uploading and privilege escalation to uncover a hidden flag. The challenge simulates a real-world scenario where unauthorized access to a server must be achieved to find sensitive information.
+
+Author: DarkUnic0rn
+
+http://35.208.110.64
+</code></pre>
+<ol>
+<li><p>利用目錄暴力破解後(Ex:dirb、hydra)，可以得知有以下圖片列出的目錄可以進去。</p>
+</li>
+<li><p>發現在&#x2F;uploads上可以看到其他本次參賽玩家上傳的exploit，使用他們的exploit可以發現有.&#x2F;hidden_flag，後面有標記Flag，獲得本題的答案。<br><img src="https://hackmd.io/_uploads/rJNvgvixke.png" alt="image"></p>
+</li>
+</ol>
+<p>:::danger<br>正常來講，這題不該這麼解的，但主辦單位並沒有限制攻擊的手段，<br>只要能獲得Flag跟不要把網站搞爆就ok(根據Rules)，<br>雖然我也不知道這算不算是一種bug還是作弊手段？<br>:::</p>
+<h3 id="Forensic"><a href="#Forensic" class="headerlink" title="Forensic"></a>Forensic</h3><h4 id="Dialing-for-Danger-100"><a href="#Dialing-for-Danger-100" class="headerlink" title="Dialing for Danger - 100"></a>Dialing for Danger - 100</h4><p>Answer:CM{GOLDEN_GATE_BRIDGE}<br><img src="https://hackmd.io/_uploads/ByCv-wjxyl.png" alt="image"></p>
+<pre><code>Oops! Two not-so-smooth criminals just spilled the beans 
+during a phone chat on a brick phone! 📞🎶 Crack the 
+location before their next mischief unfolds. Find the place 
+befor attack
+
+Flag: Wrap it in CM &#123; First_second_third &#125;
+
+Download Link:
+https://ctf.cybermaterial.com/files/93f67ade17f00899b51e4bde54245174/4_666_555_3_33_66_0_4_2_8_33_0_22_7.txt?token=eyJ1c2VyX2lkIjo0MzgsInRlYW1faWQiOm51bGwsImZpbGVfaWQiOjEwfQ.Zx3hHA.m4QU1u8bN7Gso51d0dUwx41aBOM
+</code></pre>
+<ol>
+<li><p>根據題目附的文字檔，只有一串數字而已，一樣利用dcode的AI辨識看看?<br><img src="https://hackmd.io/_uploads/BJv9bvixkg.png" alt="image"></p>
+</li>
+<li><p>發現加密方法極有可能是Multi-tap Phone，所以丟至對應的解碼網站，<br>可以獲得一個地點”GOLDEN GATE BRIDGE”，也就是美國的金門大橋<br>英文就是本題的答案。<br><img src="https://hackmd.io/_uploads/rkS0WvoeJe.png" alt="image"><br><img src="https://hackmd.io/_uploads/HkOVMDjg1g.png" alt="image"></p>
+</li>
+</ol>
+<h2 id="After-all"><a href="#After-all" class="headerlink" title="After all"></a>After all</h2><p>這次打的還算輕鬆，還拿了The Case of the Missing Flag的First Kill，<br>算是還不錯吧，可惜最後只拿了Rk.36，因為還得忙升學(特殊選才)，<br>期待下一次能再打更高一點的名次！</p>
+<p><strong>The Case of the Missing Flag <em>[First Kill]</em></strong><br><img src="https://hackmd.io/_uploads/ryF1Hwoe1x.png" alt="image"></p>
+
+    </div>
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            2022 - 2026 Sh1ro&#39;s Blog
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;Sh1ro
+        </div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
+
+
+
+
+    
+</body>
+</html>
